@@ -1,0 +1,33 @@
+name: Feature request
+description: Suggest an improvement to Moodeur.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What workflow or limitation should this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the result you would like.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: Project fit
+      options:
+        - label: This proposal preserves Moodeur's local-first and offline-by-default behavior.
+          required: true
+        - label: I searched for an existing request covering this idea.
+          required: true

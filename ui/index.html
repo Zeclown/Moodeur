@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moodeur</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app" class="app-shell" aria-busy="false">
+      <header class="program-header">
+        <div class="program-icon" aria-hidden="true">M</div>
+        <div class="program-title">
+          <strong id="window-title">Moodeur</strong>
+          <span>local picture + sound board</span>
+        </div>
+        <div class="header-decoration" aria-hidden="true"><i></i><i></i><i></i></div>
+      </header>
+
+      <nav class="menu-bar" aria-label="Application menu">
+        <div class="menu-group">
+          <button class="menu-button" data-menu="file-menu"><u>F</u>ile</button>
+          <div id="file-menu" class="popup-menu" hidden>
+            <button data-action="new"><span>New Board…</span><kbd>Ctrl+N</kbd></button>
+            <button data-action="open"><span>Open Board…</span><kbd>Ctrl+O</kbd></button>
+            <hr />
+            <button data-action="import"><span>Import Media…</span><kbd>Ctrl+I</kbd></button>
+            <button data-action="open-media-folder"><span>Open Media Folder</span><kbd></kbd></button>
+            <button data-action="youtube"><span>Record YouTube Audio…</span><kbd></kbd></button>
+            <button data-action="save"><span>Save Now</span><kbd>Ctrl+S</kbd></button>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-button" data-menu="edit-menu"><u>E</u>dit</button>
+          <div id="edit-menu" class="popup-menu" hidden>
+            <button data-action="undo"><span>Undo</span><kbd>Ctrl+Z</kbd></button>
+            <button data-action="redo"><span>Redo</span><kbd>Ctrl+Y</kbd></button>
+            <hr />
+            <button data-action="add-text"><span>Add Text Note</span><kbd>Ctrl+T</kbd></button>
+            <button data-action="draw"><span>Draw Marker</span><kbd>B</kbd></button>
+            <button data-action="erase"><span>Scrub Eraser</span><kbd>E</kbd></button>
+            <button data-action="duplicate"><span>Duplicate</span><kbd>Ctrl+D</kbd></button>
+            <button data-action="delete"><span>Delete</span><kbd>Del</kbd></button>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-button" data-menu="view-menu"><u>V</u>iew</button>
+          <div id="view-menu" class="popup-menu" hidden>
+            <button data-action="zoom-in"><span>Zoom In</span><kbd>+</kbd></button>
+            <button data-action="zoom-out"><span>Zoom Out</span><kbd>−</kbd></button>
+            <button data-action="zoom-reset"><span>Actual Size</span><kbd>0</kbd></button>
+            <button data-action="frame-all"><span>Frame All</span><kbd>Home</kbd></button>
+            <hr />
+            <button data-action="presentation"><span>Presentation Mode</span><kbd>F5</kbd></button>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-button" data-menu="music-menu"><u>M</u>usic</button>
+          <div id="music-menu" class="popup-menu" hidden>
+            <button data-action="start-tape"><span>Start Board Tape</span><kbd>Space</kbd></button>
+            <button data-action="stop-music"><span>Stop Music</span><kbd>Esc</kbd></button>
+            <button data-action="show-queue"><span>Show Queue</span><kbd></kbd></button>
+          </div>
+        </div>
+        <span id="board-folder" class="board-folder">No board open</span>
+      </nav>
+
+      <div class="toolbar" aria-label="Main toolbar">
+        <button class="tool-button" data-action="new" title="New board"><span>▧</span>New</button>
+        <button class="tool-button" data-action="open" title="Open board"><span>▣</span>Open</button>
+        <button class="tool-button" data-action="import" title="Import pictures or music"><span>⇩</span>Import</button>
+        <button class="tool-button youtube-tool" data-action="youtube" title="Record permitted YouTube audio"><span>YT</span>Audio</button>
+        <button class="tool-button" data-action="add-text" title="Add a handwritten text note"><span>T</span>Text</button>
+        <button class="tool-button marker-tool" data-action="draw" title="Draw with the marker (B)"><span>✎</span>Draw</button>
+        <button class="tool-button eraser-tool" data-action="erase" title="Scrub marker ink (E)"><span>▰</span>Erase</button>
+        <button class="tool-button present-tool" data-action="presentation" title="Start presentation mode (F5)"><span>▻</span>Present</button>
+        <div class="tool-separator"></div>
+        <button class="tool-button" data-action="undo" title="Undo"><span>↶</span>Undo</button>
+        <button class="tool-button" data-action="redo" title="Redo"><span>↷</span>Redo</button>
+        <div class="tool-separator"></div>
+        <button class="tool-button" data-action="duplicate" title="Duplicate selection"><span>⧉</span>Copy</button>
+        <button class="tool-button" data-action="delete" title="Delete selection"><span>⌫</span>Delete</button>
+        <div class="toolbar-spacer"></div>
+        <div class="zoom-box" title="Canvas zoom">
+          <button data-action="zoom-out" aria-label="Zoom out">−</button>
+          <output id="zoom-output">100%</output>
+          <button data-action="zoom-in" aria-label="Zoom in">+</button>
+        </div>
+      </div>
+
+      <main class="workspace">
+        <section id="canvas-viewport" class="canvas-viewport" tabindex="0" aria-label="Moodboard canvas">
+          <div id="empty-hint" class="empty-hint" hidden>
+            <strong>THIS BOARD IS FEELING LONELY</strong>
+            <span>Drop pictures or music here, paste an image, or press Import.</span>
+          </div>
+          <div id="canvas-world" class="canvas-world"></div>
+          <div id="selection-marquee" class="selection-marquee" hidden aria-hidden="true"></div>
+          <button id="start-tape" class="start-tape" hidden>▶ START TAPE</button>
+          <div id="presentation-controls" class="presentation-controls" role="toolbar" aria-label="Presentation controls" hidden>
+            <span class="presentation-tape" aria-hidden="true"><i></i><i></i></span>
+            <button data-action="presentation-previous" title="Previous slide" aria-label="Previous slide">◀</button>
+            <output id="presentation-counter" aria-live="polite">1 / 1</output>
+            <button data-action="presentation-next" title="Next slide" aria-label="Next slide">▶</button>
+            <button data-action="presentation-exit" class="presentation-exit" title="Exit presentation mode">EXIT</button>
+          </div>
+          <div id="drop-overlay" class="drop-overlay" hidden>
+            <div><strong>DROP IT!</strong><span>Pictures and music will be copied into this board.</span></div>
+          </div>
+        </section>
+
+        <aside class="side-panel">
+          <div class="tab-strip" role="tablist">
+            <button id="inspector-tab" class="tab active" role="tab" aria-selected="true" data-tab="inspector">Inspector</button>
+            <button id="background-tab" class="tab" role="tab" aria-selected="false" data-tab="background"><span class="mini-pattern" aria-hidden="true"></span> Background</button>
+            <button id="queue-tab" class="tab" role="tab" aria-selected="false" data-tab="queue"><span class="mini-tape" aria-hidden="true"><i></i><i></i></span> Tape Queue <span id="queue-count">0</span></button>
+          </div>
+          <section id="inspector-panel" class="panel-page" role="tabpanel">
+            <div id="no-selection" class="panel-message">
+              <div class="tiny-monitor" aria-hidden="true">?</div>
+              <strong>Nothing selected</strong>
+              <span>Click a card to tune it up.</span>
+            </div>
+            <div id="inspector-content" hidden></div>
+          </section>
+          <section id="background-panel" class="panel-page" role="tabpanel" hidden>
+            <div id="background-content"></div>
+          </section>
+          <section id="queue-panel" class="panel-page" role="tabpanel" hidden>
+            <div class="queue-hero">
+              <div class="cassette-icon" aria-hidden="true">
+                <div class="cassette-window"><i></i><i></i></div>
+                <div class="cassette-label-text">MOODEUR</div>
+              </div>
+              <div><strong>ENDLESS MIXTAPE</strong><span>Loops forever. Shuffle optional.</span></div>
+            </div>
+            <div class="queue-explainer">Tracks with “Add To Tape” switched on use the order below unless shuffle is switched on.</div>
+            <label class="queue-option" for="queue-shuffle">
+              <input id="queue-shuffle" type="checkbox" />
+              <span><strong>Shuffle every loop</strong><small>Makes a fresh order at each start and avoids repeating the boundary track when possible.</small></span>
+            </label>
+            <div id="queue-list" class="queue-list"></div>
+            <button id="queue-play-toggle" class="wide-button" data-action="toggle-tape">▶ Play queue from start</button>
+          </section>
+        </aside>
+      </main>
+
+      <footer class="status-bar">
+        <button id="save-status" class="status-cell save-state" data-action="save">No board</button>
+        <div id="selection-status" class="status-cell">0 objects</div>
+        <div id="pointer-status" class="status-cell coordinates">X: 0 &nbsp; Y: 0</div>
+        <div class="resize-grip" aria-hidden="true">◢</div>
+      </footer>
+
+      <div id="welcome-dialog" class="dialog-backdrop">
+        <section class="dialog-window welcome-window" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+          <header><span id="welcome-title">Welcome to Moodeur</span><button aria-label="Close" disabled>×</button></header>
+          <div class="welcome-body">
+            <div class="welcome-logo" aria-hidden="true"><span>M</span><i>♫</i></div>
+            <div>
+              <h1>MOODEUR</h1>
+              <p>Pictures. Music. Vibes.<br />No account. Your boards stay local.</p>
+              <div class="dialog-actions vertical">
+                <button data-action="new" class="default-button">Create a new board…</button>
+                <button data-action="open">Open an existing board…</button>
+              </div>
+            </div>
+            <section class="recent-boards-section" aria-labelledby="recent-boards-title">
+              <header id="recent-boards-title">RECENT BOARDS</header>
+              <div id="recent-board-list" class="recent-board-list"><div class="recent-board-empty">Looking for old moods…</div></div>
+            </section>
+          </div>
+          <footer>Version 0.5.5 · Everything stays on this computer.</footer>
+        </section>
+      </div>
+
+      <div id="title-dialog" class="dialog-backdrop" hidden>
+        <form id="title-form" class="dialog-window small-dialog">
+          <header><span>New Moodeur Board</span><button type="button" data-action="cancel-title" aria-label="Close">×</button></header>
+          <div class="dialog-form">
+            <label for="board-title-input">Give this board a name:</label>
+            <input id="board-title-input" maxlength="120" value="Untitled Board" autocomplete="off" />
+            <small>Next, choose the folder that will contain moodeur.json and the copied media.</small>
+          </div>
+          <div class="dialog-actions">
+            <button type="button" data-action="cancel-title">Cancel</button>
+            <button type="submit" class="default-button">Choose Folder…</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="youtube-dialog" class="dialog-backdrop" hidden>
+        <form id="youtube-form" class="dialog-window youtube-dialog" role="dialog" aria-modal="true" aria-labelledby="youtube-title">
+          <header><span id="youtube-title">Record YouTube Audio</span><button id="youtube-close" type="button" aria-label="Close">×</button></header>
+          <div class="youtube-body">
+            <div class="youtube-tape" aria-hidden="true"><span>YT</span><i></i><i></i></div>
+            <div class="youtube-fields">
+              <label for="youtube-url">YouTube video address</label>
+              <input id="youtube-url" type="url" maxlength="2048" placeholder="https://www.youtube.com/watch?v=…" autocomplete="off" required />
+              <label class="checkbox-row youtube-permission"><input id="youtube-permission" type="checkbox" required /> I own this audio or have permission to download it.</label>
+              <small>Moodeur records one M4A audio track. Playlists, accounts, cookies, and video downloads are not supported.</small>
+              <small>Uses the bundled open-source yt-dlp and QuickJS-NG utilities only when you press Record Audio.</small>
+            </div>
+            <div id="youtube-progress-box" class="youtube-progress-box" hidden>
+              <div id="youtube-progress-status">Preparing the tape deck…</div>
+              <progress id="youtube-progress" max="100" value="0">0%</progress>
+            </div>
+          </div>
+          <div class="dialog-actions">
+            <button id="youtube-cancel" type="button">Cancel</button>
+            <button id="youtube-submit" type="submit" class="default-button">Record Audio</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="confirm-dialog" class="dialog-backdrop" hidden>
+        <section class="dialog-window small-dialog" role="alertdialog" aria-modal="true">
+          <header><span id="confirm-title">Moodeur</span><button type="button" data-confirm="false" aria-label="Close">×</button></header>
+          <div class="confirm-body"><div class="alert-icon">!</div><p id="confirm-message"></p></div>
+          <div class="dialog-actions">
+            <button data-confirm="false">Cancel</button>
+            <button data-confirm="true" class="default-button">OK</button>
+          </div>
+        </section>
+      </div>
+
+      <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
+    </div>
+    <script src="app.js" defer></script>
+  </body>
+</html>

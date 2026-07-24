@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Moodeur",
+  "version": "0.5.5",
+  "identifier": "com.moodeur.desktop",
+  "build": {
+    "frontendDist": "../ui"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Moodeur",
+        "width": 1280,
+        "height": 820,
+        "minWidth": 860,
+        "minHeight": 600,
+        "resizable": true,
+        "dragDropEnabled": false,
+        "zoomHotkeysEnabled": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; connect-src ipc: http://ipc.localhost asset: http://asset.localhost; img-src 'self' asset: http://asset.localhost blob: data:; media-src 'self' asset: http://asset.localhost blob:; style-src 'self' 'unsafe-inline'; script-src 'self'",
+      "assetProtocol": {
+        "enable": true,
+        "scope": []
+      },
+      "capabilities": ["default"]
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "externalBin": ["binaries/yt-dlp", "binaries/qjs"],
+    "resources": ["licenses/*"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/256x256.png",
+      "icons/icon.ico"
+    ],
+    "shortDescription": "A small offline retro moodboard",
+    "longDescription": "Moodeur is a local-first freeform moodboard for pictures and music.",
+    "category": "GraphicsAndDesign",
+    "windows": {
+      "webviewInstallMode": {
+        "type": "skip"
+      },
+      "nsis": {
+        "installMode": "currentUser"
+      }
+    },
+    "macOS": {
+      "minimumSystemVersion": "12.0"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+[package]
+name = "moodeur"
+version = "0.5.5"
+description = "A small offline retro moodboard"
+authors = ["Moodeur"]
+edition = "2021"
+
+[lib]
+name = "moodeur_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[[bin]]
+name = "moodeur"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri = { version = "2", features = ["protocol-asset"] }
+tauri-plugin-dialog = "2"
+uuid = { version = "1", features = ["v4"] }
+
+[dev-dependencies]
+tempfile = "3"

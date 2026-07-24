@@ -1,0 +1,176 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: Release preflight
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.verify.outputs.version }}
+    steps:
+      - name: Check out complete history
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.0.2
+        with:
+          fetch-depth: 0
+      - name: Verify tag, versions, and sidecars
+        id: verify
+        shell: pwsh
+        run: ./.github/scripts/verify-project.ps1 -Tag "$env:GITHUB_REF_NAME"
+      - name: Require a commit from main
+        shell: bash
+        run: |
+          git fetch origin main
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+
+  prepare:
+    name: Prepare draft release
+    needs: preflight
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    outputs:
+      release_id: ${{ steps.release.outputs.release_id }}
+    steps:
+      - name: Create or reuse draft
+        id: release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          $tag = $env:GITHUB_REF_NAME
+          $existing = & gh release view $tag --repo $env:GITHUB_REPOSITORY --json databaseId,isDraft 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            $release = $existing | ConvertFrom-Json
+            if (-not $release.isDraft) {
+              throw "Release $tag is already published."
+            }
+          } else {
+            $notes = @"
+          Unsigned Windows and macOS builds of Moodeur $($env:VERSION).
+
+          Windows SmartScreen or macOS Gatekeeper may warn before first launch.
+          Verify downloads with SHA256SUMS.txt and GitHub artifact attestations.
+          "@
+            & gh release create $tag `
+              --repo $env:GITHUB_REPOSITORY `
+              --title "Moodeur $tag" `
+              --notes $notes `
+              --generate-notes `
+              --draft `
+              --verify-tag
+            if ($LASTEXITCODE -ne 0) {
+              throw "Could not create draft release $tag."
+            }
+            $release = (& gh release view $tag --repo $env:GITHUB_REPOSITORY --json databaseId,isDraft) | ConvertFrom-Json
+          }
+          "release_id=$($release.databaseId)" | Out-File -LiteralPath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+  build:
+    name: Build (${{ matrix.name }})
+    needs:
+      - preflight
+      - prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows x64
+            runner: windows-2025
+            target: x86_64-pc-windows-msvc
+            bundles: nsis
+          - name: macOS Apple Silicon
+            runner: macos-15
+            target: aarch64-apple-darwin
+            bundles: app,dmg
+          - name: macOS Intel
+            runner: macos-15-intel
+            target: x86_64-apple-darwin
+            bundles: app,dmg
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: write
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.0.2
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
+        with:
+          toolchain: stable
+          targets: ${{ matrix.target }}
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+        with:
+          workspaces: src-tauri -> target
+          key: release-${{ matrix.target }}
+      - name: Mark macOS sidecars executable
+        if: runner.os == 'macOS'
+        run: chmod +x src-tauri/binaries/*-apple-darwin
+      - name: Run tests
+        run: cargo test --manifest-path src-tauri/Cargo.toml --locked
+      - name: Build and upload Tauri bundles
+        uses: tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f # v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          projectPath: src-tauri
+          releaseId: ${{ needs.prepare.outputs.release_id }}
+          tagName: ${{ github.ref_name }}
+          releaseDraft: true
+          uploadUpdaterJson: false
+          uploadUpdaterSignatures: false
+          uploadWorkflowArtifacts: true
+          workflowArtifactNamePattern: release-[platform]-[arch]-[bundle]
+          releaseAssetNamePattern: "[name]-v[version]-[platform]-[arch][setup][ext]"
+          args: --target ${{ matrix.target }} --bundles ${{ matrix.bundles }}
+
+  publish:
+    name: Verify and publish
+    needs:
+      - preflight
+      - prepare
+      - build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.0.2
+      - name: Download exact release assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir release-assets
+          gh release download "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --dir release-assets
+      - name: Write SHA-256 manifest
+        shell: pwsh
+        run: ./.github/scripts/write-checksums.ps1 -AssetDirectory ./release-assets
+      - name: Attest release assets
+        uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6 # v4.2.0
+        with:
+          subject-path: release-assets/*
+      - name: Upload checksum manifest
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" release-assets/SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --clobber
+      - name: Publish release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false

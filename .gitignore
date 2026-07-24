@@ -1,0 +1,14 @@
+/src-tauri/target/
+/target/
+/downloads/
+/.local-tools/
+/.agents/
+/.idea/
+/.vscode/
+.env
+.env.*
+*.tmp
+*.log
+.DS_Store
+/tools/*.exe
+/tools/SHA2-256SUMS

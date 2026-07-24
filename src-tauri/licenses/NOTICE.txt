@@ -1,0 +1,20 @@
+Moodeur bundled utility notices
+================================
+
+yt-dlp 2026.07.04
+Source: https://github.com/yt-dlp/yt-dlp/tree/2026.07.04
+Windows SHA-256: 52fe3c26dcf71fbdc85b528589020bb0b8e383155cfa81b64dd447bbe35e24b8
+macOS SHA-256: 498bd0dae17855c599d371d68ec5bafc439a9d8640e838be25c765a9792f261b
+The standalone PyInstaller executable is distributed under GPLv3+ and
+contains third-party components. See GPL-3.0.txt,
+yt-dlp-LICENSE.txt, and yt-dlp-THIRD_PARTY_LICENSES.txt in this folder.
+
+QuickJS-NG 0.15.1
+Source: https://github.com/quickjs-ng/quickjs/tree/v0.15.1
+Windows x64 SHA-256: 5ea527b0405f0f3d11904c8722a4f1df9b631a4beed2bf988d0a831eb9f8e913
+macOS SHA-256: badc31a289050d56f1d184651736bfa6399ef0ad40db6b210b8a88a3d34be36a
+QuickJS-NG is distributed under the MIT license. See
+quickjs-ng-LICENSE.txt in this folder.
+
+These utilities are separate command-line programs invoked as child
+processes with fixed arguments. Moodeur does not expose a general shell.
