@@ -7,28 +7,17 @@
 
 Moodeur is a small, local-first moodboard for Windows and macOS. It combines a freeform picture canvas with playable music cards and stores everything in a portable folder that you control.
 
-![Moodeur icon](src-tauri/icons/128x128.png)
+![Moodeur home screen](docs/images/moodeur-welcome.png)
+
+![An open Moodeur board](docs/images/moodeur-app.png)
 
 ## What it does
 
-- Imports JPEG, PNG, GIF, WebP, AVIF, SVG, BMP, MP3, WAV, M4A/AAC, OGG, and FLAC when the operating system's native media decoder supports them.
-- Accepts multi-file drag-and-drop, native file selection, and pasted clipboard images.
-- Opens the active board's `media/` folder directly from the File menu.
-- Copies a picture to the operating-system clipboard as PNG with right-click or `Ctrl`/`Cmd` + `C`.
-- Copies note words as normal clipboard text and turns text pasted onto the canvas into a centered note.
-- Presents pictures and text notes in a chrome-free spotlight slideshow, with the tape queue as a softly fading soundtrack.
-- Shows up to ten recently opened boards on the welcome screen for one-click reopening.
-- Pastes copied cards and card groups at the current canvas pointer position.
-- Moves, proportionally resizes, layers, duplicates, deletes, arbitrarily rotates, and non-destructively crops picture cards.
-- Selects multiple cards with a left-button marquee and moves, copies, duplicates, or deletes them as a group.
-- Adds draggable handwritten text notes with inline editing, centered/left/right alignment, free resizing, rotation, ink color, text-size controls, and six retro paper colors.
-- Draws with six retro marker colors across the board and photos, with partial scrub erasing and photo-attached ink that follows the card.
-- Customizes each board with seven retro background swatches, a custom color, and five canvas-following patterns.
-- Creates playable music cards with seek, duration, and volume controls.
-- Records a permitted YouTube video's M4A audio directly into the open board with progress and cancellation; no separate downloader installation is required.
-- Adds newly imported audio to the endless **Add To Tape** queue by default, using manual order or a fresh shuffled order on every loop and avoiding a repeated boundary track whenever possible.
-- Autosaves after changes and keeps one rolling recovery backup.
-- Uses the network only when **Record YouTube Audio** is explicitly started; normal board editing remains offline, with no account, cloud storage, analytics, updater, or database.
+- Arrange pictures freely on an infinite canvas with notes and marker drawings.
+- Add playable music cards and build a looping tape queue for each board.
+- Customize the canvas and turn a board into a focused picture-and-sound presentation.
+- Import common image and audio formats while Moodeur autosaves and maintains a recovery backup.
+- Keep everything in portable local folders, with no account, cloud storage, or analytics.
 
 ## Download
 
