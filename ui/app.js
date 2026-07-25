@@ -1524,7 +1524,7 @@ function renderQueue() {
 function updateActionStates() {
   const hasBoard = Boolean(state.document);
   const hasSelection = selectedItems().length > 0;
-  const hasPresentationSlide = Boolean(state.document?.items.some((item) => item.kind === "image" || item.kind === "text"));
+  const hasPresentationSlide = Boolean(state.document?.items.some((item) => item.kind === "image"));
   $$('[data-action="import"], [data-action="open-media-folder"], [data-action="youtube"], [data-action="save"], [data-action="add-text"], [data-action="draw"], [data-action="erase"]').forEach((button) => { button.disabled = !hasBoard; });
   $$('[data-action="presentation"]').forEach((button) => { button.disabled = !hasPresentationSlide; });
   $$('[data-action="undo"]').forEach((button) => { button.disabled = !state.history.length; });
@@ -2295,16 +2295,12 @@ function deleteSelection() {
   });
 }
 
-function presentationVisualItems() {
+function presentationImageItems() {
   if (!state.document) return [];
-  const visual = (item) => item.kind === "image" || item.kind === "text";
-  const selected = state.document.items
-    .filter((item) => visual(item) && state.selectedIds.has(item.id))
-    .sort((left, right) => left.z - right.z);
-  const slides = selected.length >= 2
-    ? selected
-    : state.document.items.filter(visual).sort((left, right) => left.z - right.z);
-  return slides;
+  return window.MoodeurPresentationOrder
+    .imageIds(state.document.items, state.selectedIds)
+    .map(itemById)
+    .filter(Boolean);
 }
 
 function rotatedItemBounds(item) {
@@ -2395,9 +2391,9 @@ function enterPresentation() {
     toast("Finish the current dialog or canvas gesture first.", "error");
     return;
   }
-  const slides = presentationVisualItems();
+  const slides = presentationImageItems();
   if (!slides.length) {
-    toast("Add a picture or text note before starting a presentation.", "error");
+    toast("Add a picture before starting a presentation.", "error");
     return;
   }
   document.activeElement?.blur();

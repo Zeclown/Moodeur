@@ -25,6 +25,9 @@ jobs:
       - name: Verify metadata and sidecars
         shell: pwsh
         run: ./.github/scripts/verify-project.ps1
+      - name: Test presentation ordering
+        shell: pwsh
+        run: ./src-tauri/binaries/qjs-x86_64-pc-windows-msvc.exe -I ui/presentation-order.js tools/presentation-order.test.js
 
   rust:
     name: Rust (${{ matrix.name }})
