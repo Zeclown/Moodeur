@@ -43,9 +43,9 @@ if ($Tag) {
 }
 
 $expectedDigests = [ordered]@{
-    "src-tauri/binaries/yt-dlp-x86_64-pc-windows-msvc.exe" = "52fe3c26dcf71fbdc85b528589020bb0b8e383155cfa81b64dd447bbe35e24b8"
-    "src-tauri/binaries/yt-dlp-x86_64-apple-darwin" = "498bd0dae17855c599d371d68ec5bafc439a9d8640e838be25c765a9792f261b"
-    "src-tauri/binaries/yt-dlp-aarch64-apple-darwin" = "498bd0dae17855c599d371d68ec5bafc439a9d8640e838be25c765a9792f261b"
+    "src-tauri/binaries/yt-dlp-x86_64-pc-windows-msvc.exe" = "f5389d3698ecde4ef06f4e6b1ce0294fe9ac1396228c8990b8d3416d6d177a7d"
+    "src-tauri/binaries/yt-dlp-x86_64-apple-darwin" = "0f922c15ccc0b83eefa1c8bc9104e434318c4bf16e408e1ee93b7745a6efe0aa"
+    "src-tauri/binaries/yt-dlp-aarch64-apple-darwin" = "0f922c15ccc0b83eefa1c8bc9104e434318c4bf16e408e1ee93b7745a6efe0aa"
     "src-tauri/binaries/qjs-x86_64-pc-windows-msvc.exe" = "5ea527b0405f0f3d11904c8722a4f1df9b631a4beed2bf988d0a831eb9f8e913"
     "src-tauri/binaries/qjs-x86_64-apple-darwin" = "badc31a289050d56f1d184651736bfa6399ef0ad40db6b210b8a88a3d34be36a"
     "src-tauri/binaries/qjs-aarch64-apple-darwin" = "badc31a289050d56f1d184651736bfa6399ef0ad40db6b210b8a88a3d34be36a"

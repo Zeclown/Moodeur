@@ -1,10 +1,10 @@
 Moodeur bundled utility notices
 ================================
 
-yt-dlp 2026.07.04
-Source: https://github.com/yt-dlp/yt-dlp/tree/2026.07.04
-Windows SHA-256: 52fe3c26dcf71fbdc85b528589020bb0b8e383155cfa81b64dd447bbe35e24b8
-macOS SHA-256: 498bd0dae17855c599d371d68ec5bafc439a9d8640e838be25c765a9792f261b
+yt-dlp 2026.10.26
+Source: https://github.com/yt-dlp/yt-dlp/tree/2026.10.26
+Windows SHA-256: f5389d3698ecde4ef06f4e6b1ce0294fe9ac1396228c8990b8d3416d6d177a7d
+macOS SHA-256: 0f922c15ccc0b83eefa1c8bc9104e434318c4bf16e408e1ee93b7745a6efe0aa
 The standalone PyInstaller executable is distributed under GPLv3+ and
 contains third-party components. See GPL-3.0.txt,
 yt-dlp-LICENSE.txt, and yt-dlp-THIRD_PARTY_LICENSES.txt in this folder.

@@ -1,6 +1,6 @@
 [package]
 name = "moodeur"
-version = "0.5.5"
+version = "0.5.6"
 description = "A small offline retro moodboard"
 authors = ["Moodeur"]
 edition = "2021"

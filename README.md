@@ -121,7 +121,7 @@ cargo test --manifest-path src-tauri/Cargo.toml
 
 ## Bundled utilities
 
-YouTube audio import invokes architecture-specific yt-dlp 2026.07.04 and QuickJS-NG 0.15.1 sidecars with fixed arguments. It accepts only HTTPS `youtube.com` and `youtu.be` links, never invokes a general shell, downloads one M4A track into a generated temporary directory, and copies the validated result into the board.
+YouTube audio import invokes architecture-specific yt-dlp 2026.10.26 and QuickJS-NG 0.15.1 sidecars with fixed arguments. It accepts only HTTPS `youtube.com` and `youtu.be` links, never invokes a general shell, downloads one M4A track into a generated temporary directory, and copies the validated result into the board.
 
 Upstream licenses, third-party notices, versions, source locations, and verified SHA-256 digests are included in `src-tauri/licenses/`. Only download material you own or have permission to use.
 
